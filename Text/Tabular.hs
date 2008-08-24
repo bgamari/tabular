@@ -38,7 +38,18 @@ data Table a = Table Header Header [[a]]
 -- * Combinators
 -- ----------------------------------------------------------------------
 
--- | Just one row (or column)
+-- | Convenience type for just one row (or column).
+--   To be used with combinators as follows:
+--
+-- > example2 =
+-- >   empty ^..^ col "memtest 1" [] ^|^ col "memtest 2"   []
+-- >         ^||^ col "time test "[] ^|^ col "time test 2" []
+-- >   +.+ row "A 1" ["hog", "terrible", "slow", "slower"]
+-- >   +.+ row "A 2" ["pig", "not bad", "fast", "slowest"]
+-- >   +----+
+-- >       row "B 1" ["good", "awful", "intolerable", "bearable"]
+-- >   +.+ row "B 2" ["better", "no chance", "crawling", "amazing"]
+-- >   +.+ row "B 3" ["meh",  "well...", "worst ever", "ok"]
 data SemiTable a = SemiTable Header [a]
 
 empty :: Table a
@@ -61,10 +72,16 @@ below prop (Table     rows1 cols data1)
            (SemiTable rows2      data2) =
   Table (Group prop [rows1, rows2]) cols (data1 ++ [data2])
 
+-- | besides
 (^..^) = beside NoLine
+-- | besides with a line
 (^|^)  = beside SingleLine
+-- | besides with a double line
 (^||^) = beside DoubleLine
 
+-- | below
 (+.+) = below NoLine
+-- | below with a line
 (+----+) = below SingleLine
+-- | below with a double line
 (+====+) = below DoubleLine

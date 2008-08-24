@@ -1,27 +1,32 @@
 module Text.Tabular.AsciiArt where
 
 import Control.Monad.State (evalState, State, get, put)
-import Data.List (intersperse)
+import Data.List (intersperse, transpose)
 import Text.Tabular
 
 -- | for simplicity, we assume that each cell is rendered
 --   on a single line
 render :: (a -> String) -> Table a -> String
 render f (Table rh ch cells) =
-  unlines $ [ renderColumns biggest ch
-            , concat $ renderHLine biggest ch DoubleLine
+  unlines $ [ renderColumns sizes ch2
+            , concat $ renderHLine sizes ch2 DoubleLine
             ] ++
             (renderRs
-             $ zipHeader (map renderR cells) rh)
+             $ zipHeader (zipWith renderR rhStrings cells) rh)
  where
-  renderR cs = renderColumns biggest $ zipHeader (map f cs) ch
-  biggest = maximum . map length $ strings
-  strings = (map f . concat $ cells)
-          ++ headerStrings rh
-          ++ headerStrings ch
+  -- ch2 and cell2 include the row and column labels
+  ch2 = Group DoubleLine [Header "", ch]
+  cells2 = headerStrings ch2
+         : zipWith (\h cs -> h : map f cs) rhStrings cells
+  --
+  renderR h cs = renderColumns sizes $ Group DoubleLine
+                    [Header h, zipHeader (map f cs) ch]
+  rhStrings = headerStrings rh
+  -- maximum width for each column
+  sizes   = map (maximum . map length) . transpose $ cells2
   renderRs (Header s)   = [s]
   renderRs (Group p hs) = concat . intersperse sep . map renderRs $ hs
-    where sep = renderHLine biggest ch p
+    where sep = renderHLine sizes ch2 p
 
 -- | Retrieve the strings in a header
 headerStrings :: Header -> [String]
@@ -49,20 +54,38 @@ zipHeader ss h = evalState (helper h) ss
   helper (Group s hs) =
    Group s `fmap` mapM helper hs
 
-renderColumns :: Int -- ^ width
+flattenHeader :: Header -> [Either Properties String]
+flattenHeader (Header s) = [Right s]
+flattenHeader (Group l s) =
+  concat . intersperse [Left l] . map flattenHeader $ s
+
+-- | The idea here is that we do not consume a member of the
+--   the @[a]@ list if we hit a Property
+zipOnHeader :: (Properties -> b)
+            -> (a -> String -> b)
+            -> [a]
+            -> Header
+            -> [b]
+zipOnHeader f_prop f_meat as h = helper as $ flattenHeader h
+ where
+  helper []    [] = []
+  helper (_:_) [] = []
+  helper [] (_:_) = []
+  helper as     (Left  p:es) = f_prop p   : helper as es
+  helper (a:as) (Right x:es) = f_meat a x : helper as es
+
+-- | We stop rendering on the shortest list!
+renderColumns :: [Int] -- ^ max width for each column
               -> Header
               -> String
-renderColumns i (Header s)   = padLeft i s
-renderColumns i (Group l hs) =
-   concat . intersperse sep $ map (renderColumns i) hs
- where sep = renderVLine l
+renderColumns is h = concat $ zipOnHeader renderVLine padLeft is h
 
 renderVLine :: Properties -> String
 renderVLine NoLine     = ""
 renderVLine SingleLine = " | "
 renderVLine DoubleLine = " || "
 
-renderHLine :: Int -- ^ cell width
+renderHLine :: [Int] -- ^ width specifications
             -> Header
             -> Properties
             -> [String]
@@ -70,16 +93,13 @@ renderHLine _ _ NoLine = []
 renderHLine w h SingleLine = [renderHLine' w '-' h]
 renderHLine w h DoubleLine = [renderHLine' w '=' h]
 
-renderHLine' :: Int -> Char -> Header -> String
-renderHLine' w sep h =
-  case h of
-   Header s    -> replicate w sep
-   Group vp hs -> concat . intersperse (vsep vp)
-                         . map (\h -> renderHLine' w sep h) $ hs
+renderHLine' :: [Int] -> Char -> Header -> String
+renderHLine' is sep h = concat $ zipOnHeader vsep dashes is h
  where
-   vsep NoLine     = ""
-   vsep SingleLine = sep : "+"  ++ [sep]
-   vsep DoubleLine = sep : "++" ++ [sep]
+  dashes i _ = replicate i sep
+  vsep NoLine     = ""
+  vsep SingleLine = sep : "+"  ++ [sep]
+  vsep DoubleLine = sep : "++" ++ [sep]
 
 padLeft :: Int -> String -> String
 padLeft l s = padding ++ s

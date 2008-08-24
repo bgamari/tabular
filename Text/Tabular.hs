@@ -27,14 +27,14 @@ data Header = Header String | Group Properties [Header]
 --
 -- > -- Text.Tabular.AsciiArt.render example id
 -- > --
--- > --   memtest 1 |   memtest 2 || time test 1 | time test 2
--- > -- ============+=============++=============+============
--- > --         hog |    terrible ||        slow |      slower
--- > --         pig |     not bad ||        fast |     slowest
--- > -- ------------+-------------++-------------+------------
--- > --        good |       awful || intolerable |    bearable
--- > --      better |   no chance ||    crawling |     amazing
--- > --         meh |     well... ||  worst ever |          ok
+-- > --     || memtest 1 | memtest 2 ||  time test  | time test 2
+-- > -- ====++===========+===========++=============+============
+-- > -- A 1 ||       hog |  terrible ||        slow |      slower
+-- > -- A 2 ||       pig |   not bad ||        fast |     slowest
+-- > -- ----++-----------+-----------++-------------+------------
+-- > -- B 1 ||      good |     awful || intolerable |    bearable
+-- > -- B 2 ||    better | no chance ||    crawling |     amazing
+-- > -- B 3 ||       meh |   well... ||  worst ever |          ok
 data Table a = Table Header Header [[a]]
 
 -- ----------------------------------------------------------------------

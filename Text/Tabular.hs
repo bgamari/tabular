@@ -1,5 +1,6 @@
--- | Note: the code from this module is from to Toxaris
---   on #haskell in a conversation from 2008-08-24
+-- | Note: the core types and comibnators
+--   from this module are from Toxaris in a #haskell
+--   conversation on 2008-08-24
 module Text.Tabular where
 
 import Data.List (intersperse)

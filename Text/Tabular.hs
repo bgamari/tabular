@@ -44,9 +44,6 @@ data SemiTable a = SemiTable Header [a]
 empty :: Table a
 empty = Table (Group NoLine []) (Group NoLine []) []
 
-uncol :: SemiTable a -> Table a
-uncol (SemiTable cols data0) = Table (Group NoLine []) cols [data0]
-
 col :: String -> [a] -> SemiTable a
 col header cells = SemiTable (Header header) cells
 

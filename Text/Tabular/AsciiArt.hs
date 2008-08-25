@@ -31,12 +31,12 @@ render f (Table rh ch cells) =
 renderColumns :: [Int] -- ^ max width for each column
               -> Header String
               -> String
-renderColumns is h = concat $ zipOnHeader renderVLine padLeft is h
-
-renderVLine :: Properties -> String
-renderVLine NoLine     = ""
-renderVLine SingleLine = " | "
-renderVLine DoubleLine = " || "
+renderColumns is h = concat $ zipOnHeader hsep padLeft is h
+ where
+  hsep :: Properties -> String
+  hsep NoLine     = ""
+  hsep SingleLine = " | "
+  hsep DoubleLine = " || "
 
 renderHLine :: [Int] -- ^ width specifications
             -> Header String

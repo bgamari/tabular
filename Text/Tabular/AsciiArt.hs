@@ -11,7 +11,7 @@ render f (Table rh ch cells) =
             , concat $ renderHLine sizes ch2 DoubleLine
             ] ++
             (renderRs
-             $ zipHeader (zipWith renderR rhStrings cells) rh)
+             $ zipHeader "" (zipWith renderR rhStrings cells) rh)
  where
   -- ch2 and cell2 include the row and column labels
   ch2 = Group DoubleLine [Header "", ch]
@@ -19,7 +19,7 @@ render f (Table rh ch cells) =
          : zipWith (\h cs -> h : map f cs) rhStrings cells
   --
   renderR h cs = renderColumns sizes $ Group DoubleLine
-                    [Header h, zipHeader (map f cs) ch]
+                    [Header h, zipHeader "" (map f cs) ch]
   rhStrings = headerStrings rh
   -- maximum width for each column
   sizes   = map (maximum . map length) . transpose $ cells2
@@ -29,7 +29,7 @@ render f (Table rh ch cells) =
 
 -- | We stop rendering on the shortest list!
 renderColumns :: [Int] -- ^ max width for each column
-              -> Header
+              -> Header String
               -> String
 renderColumns is h = concat $ zipOnHeader renderVLine padLeft is h
 
@@ -39,14 +39,14 @@ renderVLine SingleLine = " | "
 renderVLine DoubleLine = " || "
 
 renderHLine :: [Int] -- ^ width specifications
-            -> Header
+            -> Header String
             -> Properties
             -> [String]
 renderHLine _ _ NoLine = []
 renderHLine w h SingleLine = [renderHLine' w '-' h]
 renderHLine w h DoubleLine = [renderHLine' w '=' h]
 
-renderHLine' :: [Int] -> Char -> Header -> String
+renderHLine' :: [Int] -> Char -> Header String -> String
 renderHLine' is sep h = concat $ zipOnHeader vsep dashes is h
  where
   dashes i _ = replicate i sep

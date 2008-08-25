@@ -7,7 +7,7 @@ import Data.List (intersperse)
 import Control.Monad.State (evalState, State, get, put)
 
 data Properties = NoLine | SingleLine | DoubleLine
-data Header = Header String | Group Properties [Header]
+data Header h = Header h | Group Properties [Header h]
 
 -- |
 -- > example = Table
@@ -36,18 +36,18 @@ data Header = Header String | Group Properties [Header]
 -- > -- B 1 ||      good |     awful || intolerable |    bearable
 -- > -- B 2 ||    better | no chance ||    crawling |     amazing
 -- > -- B 3 ||       meh |   well... ||  worst ever |          ok
-data Table a = Table Header Header [[a]]
+data Table a = Table (Header String) (Header String) [[a]]
 
 -- ----------------------------------------------------------------------
 -- * Helpers
 -- ----------------------------------------------------------------------
 
 -- | Retrieve the strings in a header
-headerStrings :: Header -> [String]
+headerStrings :: Header String -> [String]
 headerStrings (Header s) = [s]
 headerStrings (Group _ hs) = concatMap headerStrings hs
 
--- | 'zipHeader' @h@ @ss@ returns the same structure
+-- | 'zipHeader' @e@ @h@ @ss@ returns the same structure
 --   as @h@ except with all the text replaced by the
 --   contents of @ss@
 --
@@ -55,20 +55,20 @@ headerStrings (Group _ hs) = concatMap headerStrings hs
 --
 --   If the row has too many cells, the excess is ignored.
 --   If it has too few cells, the missing ones (at the end)
---   and replaced with the empty string
-zipHeader :: [String] -> Header -> Header
-zipHeader ss h = evalState (helper h) ss
+--   and replaced with the empty contents @e@
+zipHeader :: h -> [h] -> Header a -> Header h
+zipHeader e ss h = evalState (helper h) ss
  where
   helper (Header s) =
    do cells  <- get
       string <- case cells of
-                  []     -> return ""
+                  []     -> return e
                   (s:ss) -> put ss >> return s
       return $ Header string
   helper (Group s hs) =
    Group s `fmap` mapM helper hs
 
-flattenHeader :: Header -> [Either Properties String]
+flattenHeader :: Header h -> [Either Properties h]
 flattenHeader (Header s) = [Right s]
 flattenHeader (Group l s) =
   concat . intersperse [Left l] . map flattenHeader $ s
@@ -76,9 +76,9 @@ flattenHeader (Group l s) =
 -- | The idea here is that we do not consume a member of the
 --   the @[a]@ list if we hit a Property
 zipOnHeader :: (Properties -> b)
-            -> (a -> String -> b)
+            -> (a -> h -> b)
             -> [a]
-            -> Header
+            -> Header h
             -> [b]
 zipOnHeader f_prop f_meat as h = helper as $ flattenHeader h
  where
@@ -103,7 +103,7 @@ zipOnHeader f_prop f_meat as h = helper as $ flattenHeader h
 -- >       row "B 1" ["good", "awful", "intolerable", "bearable"]
 -- >   +.+ row "B 2" ["better", "no chance", "crawling", "amazing"]
 -- >   +.+ row "B 3" ["meh",  "well...", "worst ever", "ok"]
-data SemiTable a = SemiTable Header [a]
+data SemiTable a = SemiTable (Header String) [a]
 
 empty :: Table a
 empty = Table (Group NoLine []) (Group NoLine []) []

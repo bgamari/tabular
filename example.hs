@@ -1,8 +1,16 @@
 import Text.Tabular
-import Text.Tabular.AsciiArt
+import Text.Html
 
-main = putStr $ unlines $ map (render id) [example2, example]
+import qualified Text.Tabular.AsciiArt as A
+import qualified Text.Tabular.Html     as H
 
+main =
+ do writeFile "example.txt"  $ A.render id example2
+    writeFile "example.html" $ renderHtml $
+      H.css H.defaultCss +++ H.render id example2
+    putStrLn $ "wrote example.txt and example.html"
+
+-- | an example table showing grouped columns and rows
 example = Table
   (Group SingleLine
      [ Group NoLine [Header "A 1", Header "A 2"]
@@ -19,6 +27,7 @@ example = Table
   , ["meh",  "well...", "worst ever", "ok"]
   ]
 
+-- | the same example built a slightly different way
 example2 =
   empty ^..^ colH "memtest 1" ^|^ colH "memtest 2"
         ^||^ colH "time test" ^|^ colH "time test 2"

@@ -48,11 +48,11 @@ hAttr _          = []
 --
 --   So
 --   @
---     o o o | o o o | o o 
+--     o o o | o o o | o o
 --   @
 --   gets converted into
 --   @
---     O O X   O O X   O O 
+--     O O X   O O X   O O
 --   @
 squish :: (Properties -> b -> b)
        -> (h -> b)

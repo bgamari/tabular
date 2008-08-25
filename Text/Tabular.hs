@@ -111,8 +111,15 @@ empty = Table (Group NoLine []) (Group NoLine []) []
 col :: String -> [a] -> SemiTable a
 col header cells = SemiTable (Header header) cells
 
+-- | Column header
+colH :: String -> SemiTable a
+colH header = col header []
+
 row :: String -> [a] -> SemiTable a
 row = col
+
+rowH :: String -> SemiTable a
+rowH = colH
 
 beside :: Properties -> Table a -> SemiTable a -> Table a
 beside prop (Table rows cols1 data1)

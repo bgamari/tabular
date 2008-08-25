@@ -20,8 +20,8 @@ example = Table
   ]
 
 example2 =
-  empty ^..^ col "memtest 1" [] ^|^ col "memtest 2"   []
-        ^||^ col "time test "[] ^|^ col "time test 2" []
+  empty ^..^ colH "memtest 1" ^|^ colH "memtest 2"
+        ^||^ colH "time test" ^|^ colH "time test 2"
   +.+ row "A 1" ["hog", "terrible", "slow", "slower"]
   +.+ row "A 2" ["pig", "not bad", "fast", "slowest"]
   +----+

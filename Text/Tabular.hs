@@ -47,23 +47,25 @@ headerStrings :: Header String -> [String]
 headerStrings (Header s) = [s]
 headerStrings (Group _ hs) = concatMap headerStrings hs
 
--- | 'zipHeader' @e@ @h@ @ss@ returns the same structure
---   as @h@ except with all the text replaced by the
---   contents of @ss@
+instance Functor Header where
+ fmap f (Header s)   = Header (f s)
+ fmap f (Group p hs) = Group p (map (fmap f) hs)
+
+-- | 'zipHeader' @e@ @ss@ @h@ returns the same structure
+--   as @h@ except with all the text replaced by the contents
+--   of @ss@.
 --
--- Think of this as copying the contents
---
---   If the row has too many cells, the excess is ignored.
+--   If @ss@ has too many cells, the excess is ignored.
 --   If it has too few cells, the missing ones (at the end)
 --   and replaced with the empty contents @e@
-zipHeader :: h -> [h] -> Header a -> Header h
+zipHeader :: h -> [h] -> Header a -> Header (h,a)
 zipHeader e ss h = evalState (helper h) ss
  where
-  helper (Header s) =
+  helper (Header x) =
    do cells  <- get
       string <- case cells of
-                  []     -> return e
-                  (s:ss) -> put ss >> return s
+                  []     -> return (e,x)
+                  (s:ss) -> put ss >> return (s,x)
       return $ Header string
   helper (Group s hs) =
    Group s `fmap` mapM helper hs
@@ -73,20 +75,37 @@ flattenHeader (Header s) = [Right s]
 flattenHeader (Group l s) =
   concat . intersperse [Left l] . map flattenHeader $ s
 
--- | The idea here is that we do not consume a member of the
---   the @[a]@ list if we hit a Property
-zipOnHeader :: (Properties -> b)
-            -> (a -> h -> b)
-            -> [a]
-            -> Header h
-            -> [b]
-zipOnHeader f_prop f_meat as h = helper as $ flattenHeader h
+-- | The idea is to deal with the fact that Properties
+--   (e.g. borders) are not standalone cells but attributes
+--   of a cell.  A border is just a CSS decoration of a
+--   TD element.
+--
+--   squish @decorator f h@ applies @f@ to every item
+--   in the list represented by @h@ (see 'flattenHeader'),
+--   additionally applying @decorator@ if the item is
+--   followed by some kind of boundary
+--
+--   So
+--   @
+--     o o o | o o o | o o
+--   @
+--   gets converted into
+--   @
+--     O O X   O O X   O O
+--   @
+squish :: (Properties -> b -> b)
+       -> (h -> b)
+       -> Header h
+       -> [b]
+squish decorator f h = helper $ flattenHeader h
  where
-  helper []    [] = []
-  helper (_:_) [] = []
-  helper [] (_:_) = []
-  helper as     (Left  p:es) = f_prop p   : helper as es
-  helper (a:as) (Right x:es) = f_meat a x : helper as es
+  helper [] = []
+  helper (Left p:es)  = helper es
+  helper (Right x:es) =
+   case es of
+     (Left p:es2) -> decorator p (f x) : helper es2
+     _            -> f x : helper es
+
 -- ----------------------------------------------------------------------
 -- * Combinators
 -- ----------------------------------------------------------------------

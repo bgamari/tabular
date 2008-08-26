@@ -10,7 +10,7 @@ render f (Table rh ch cells) =
   unlines $ [ renderColumns sizes ch2
             , concat $ renderHLine sizes ch2 DoubleLine
             ] ++
-            (renderRs
+            (renderRs $ fmap fst
              $ zipHeader "" (zipWith renderR rhStrings cells) rh)
  where
   -- ch2 and cell2 include the row and column labels
@@ -19,7 +19,8 @@ render f (Table rh ch cells) =
          : zipWith (\h cs -> h : map f cs) rhStrings cells
   --
   renderR h cs = renderColumns sizes $ Group DoubleLine
-                    [Header h, zipHeader "" (map f cs) ch]
+                    [ Header h
+                    , fmap fst $ zipHeader "" (map f cs) ch]
   rhStrings = headerStrings rh
   -- maximum width for each column
   sizes   = map (maximum . map length) . transpose $ cells2
@@ -31,8 +32,10 @@ render f (Table rh ch cells) =
 renderColumns :: [Int] -- ^ max width for each column
               -> Header String
               -> String
-renderColumns is h = concat $ zipOnHeader hsep padLeft is h
+renderColumns is h =
+  concatMap helper $ flattenHeader $ zipHeader 0 is h
  where
+  helper = either hsep (uncurry padLeft)
   hsep :: Properties -> String
   hsep NoLine     = ""
   hsep SingleLine = " | "
@@ -47,9 +50,11 @@ renderHLine w h SingleLine = [renderHLine' w '-' h]
 renderHLine w h DoubleLine = [renderHLine' w '=' h]
 
 renderHLine' :: [Int] -> Char -> Header String -> String
-renderHLine' is sep h = concat $ zipOnHeader vsep dashes is h
+renderHLine' is sep h = concatMap helper
+                      $ flattenHeader $ zipHeader 0 is h
  where
-  dashes i _ = replicate i sep
+  helper          = either vsep dashes
+  dashes (i,_)    = replicate i sep
   vsep NoLine     = ""
   vsep SingleLine = sep : "+"  ++ [sep]
   vsep DoubleLine = sep : "++" ++ [sep]

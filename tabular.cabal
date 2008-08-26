@@ -25,6 +25,7 @@ license:             BSD3
 license-file:        LICENSE
 author:              Eric Kow
 maintainer:          <E.Y.Kow@brighton.ac.uk>
+homepage:            http://code.haskell.org/~kowey/tabular
 build-Depends:       base >= 2.1 && < 3.1, mtl >= 1 && < 1.2,
                      html >= 1.0 && < 2.0
 build-type:          Simple

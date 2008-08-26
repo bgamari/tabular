@@ -10,15 +10,14 @@ render f (Table rh ch cells) =
   unlines $ [ renderColumns sizes ch2
             , concat $ renderHLine sizes ch2 DoubleLine
             ] ++
-            (renderRs $ fmap fst
-             $ zipHeader "" (zipWith renderR rhStrings cells) rh)
+            (renderRs $ fmap renderR $ zipHeader [] cells rh)
  where
   -- ch2 and cell2 include the row and column labels
   ch2 = Group DoubleLine [Header "", ch]
   cells2 = headerStrings ch2
          : zipWith (\h cs -> h : map f cs) rhStrings cells
   --
-  renderR h cs = renderColumns sizes $ Group DoubleLine
+  renderR (cs,h) = renderColumns sizes $ Group DoubleLine
                     [ Header h
                     , fmap fst $ zipHeader "" (map f cs) ch]
   rhStrings = headerStrings rh

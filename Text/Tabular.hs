@@ -39,7 +39,7 @@ data Header h = Header h | Group Properties [Header h]
 data Table a = Table (Header String) (Header String) [[a]]
 
 -- ----------------------------------------------------------------------
--- * Helpers
+-- * Helper functions for rendering
 -- ----------------------------------------------------------------------
 
 -- | Retrieve the strings in a header

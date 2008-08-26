@@ -3,12 +3,15 @@ import Text.Html
 
 import qualified Text.Tabular.AsciiArt as A
 import qualified Text.Tabular.Html     as H
+import qualified Text.Tabular.Latex    as L
 
 main =
  do writeFile "example.txt"  $ A.render id example2
     writeFile "example.html" $ renderHtml $
       H.css H.defaultCss +++ H.render id example2
-    putStrLn $ "wrote example.txt and example.html"
+    writeFile "exampleT.tex"  $ L.render id example2
+    putStrLn $ "wrote example.txt, example.html and exampleT.tex"
+    putStrLn $ "(hint: pdflatex example)"
 
 -- | an example table showing grouped columns and rows
 example = Table

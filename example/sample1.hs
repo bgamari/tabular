@@ -6,15 +6,15 @@ import qualified Text.Tabular.Html     as H
 import qualified Text.Tabular.Latex    as L
 
 main =
- do writeFile "example.txt"  $ A.render id example2
-    writeFile "example.html" $ renderHtml $
+ do writeFile "sample1.txt"  $ A.render id example2
+    writeFile "sample1.html" $ renderHtml $
       H.css H.defaultCss +++ H.render id example2
-    writeFile "exampleT.tex"  $ L.render id example2
-    putStrLn $ "wrote example.txt, example.html and exampleT.tex"
-    putStrLn $ "(hint: pdflatex example)"
+    writeFile "sample1T.tex"  $ L.render id example2
+    putStrLn $ "wrote sample1.txt, sample1.html and sample1T.tex"
+    putStrLn $ "(hint: pdflatex sample1)"
 
 -- | an example table showing grouped columns and rows
-example = Table
+sample1 = Table
   (Group SingleLine
      [ Group NoLine [Header "A 1", Header "A 2"]
      , Group NoLine [Header "B 1", Header "B 2", Header "B 3"]

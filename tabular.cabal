@@ -33,4 +33,5 @@ exposed-modules:     Text.Tabular,
                      Text.Tabular.AsciiArt,
                      Text.Tabular.Html,
                      Text.Tabular.Latex
-extra-files: example.hs, example.tex
+data-files: example/sample1.hs,
+            example/sample1.tex

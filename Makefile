@@ -1,5 +1,5 @@
 all :
-	#runhaskell Setup configure --user
+	runhaskell Setup configure --user
 	runhaskell Setup build
 	runhaskell Setup install
-	ghc --make example
+	cd example; ghc --make sample1

@@ -14,7 +14,7 @@ render f (Table rh ch cells) =
   --
   body = concatHtml $ squish applyHAttr tr
        $ fmap fst
-       $ zipHeader noHtml rows ch
+       $ zipHeader noHtml rows rh
   rows = zipWith (\h cs -> myTh h +++ doRow cs)
            rhStrings cells
   doRow cs = concatHtml $ squish applyVAttr myTd $

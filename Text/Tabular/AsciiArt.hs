@@ -36,7 +36,7 @@ renderColumns is h =
  where
   helper = either hsep (uncurry padLeft)
   hsep :: Properties -> String
-  hsep NoLine     = ""
+  hsep NoLine     = " "
   hsep SingleLine = " | "
   hsep DoubleLine = " || "
 
@@ -54,7 +54,7 @@ renderHLine' is sep h = concatMap helper
  where
   helper          = either vsep dashes
   dashes (i,_)    = replicate i sep
-  vsep NoLine     = ""
+  vsep NoLine     = [sep]
   vsep SingleLine = sep : "+"  ++ [sep]
   vsep DoubleLine = sep : "++" ++ [sep]
 

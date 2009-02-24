@@ -36,16 +36,16 @@ data Header h = Header h | Group Properties [Header h]
 -- > -- B 1 ||      good |     awful || intolerable |    bearable
 -- > -- B 2 ||    better | no chance ||    crawling |     amazing
 -- > -- B 3 ||       meh |   well... ||  worst ever |          ok
-data Table a = Table (Header String) (Header String) [[a]]
+data Table rh ch a = Table (Header rh) (Header ch) [[a]]
 
 -- ----------------------------------------------------------------------
 -- * Helper functions for rendering
 -- ----------------------------------------------------------------------
 
--- | Retrieve the strings in a header
-headerStrings :: Header String -> [String]
-headerStrings (Header s) = [s]
-headerStrings (Group _ hs) = concatMap headerStrings hs
+-- | Retrieve the contents of a  header
+headerContents :: Header h -> [h]
+headerContents (Header s) = [s]
+headerContents (Group _ hs) = concatMap headerContents hs
 
 instance Functor Header where
  fmap f (Header s)   = Header (f s)
@@ -122,47 +122,51 @@ squish decorator f h = helper $ flattenHeader h
 -- >       row "B 1" ["good", "awful", "intolerable", "bearable"]
 -- >   +.+ row "B 2" ["better", "no chance", "crawling", "amazing"]
 -- >   +.+ row "B 3" ["meh",  "well...", "worst ever", "ok"]
-data SemiTable a = SemiTable (Header String) [a]
+data SemiTable h a = SemiTable (Header h) [a]
 
-empty :: Table a
+empty :: Table rh ch a
 empty = Table (Group NoLine []) (Group NoLine []) []
 
-col :: String -> [a] -> SemiTable a
+col :: ch -> [a] -> SemiTable ch a
 col header cells = SemiTable (Header header) cells
 
 -- | Column header
-colH :: String -> SemiTable a
+colH :: ch -> SemiTable ch a
 colH header = col header []
 
-row :: String -> [a] -> SemiTable a
+row :: rh -> [a] -> SemiTable rh a
 row = col
 
-rowH :: String -> SemiTable a
+rowH :: rh -> SemiTable rh a
 rowH = colH
 
-beside :: Properties -> Table a -> SemiTable a -> Table a
+beside :: Properties -> Table rh ch a -> SemiTable ch a -> Table rh ch a
 beside prop (Table rows cols1 data1)
             (SemiTable  cols2 data2) =
   Table rows (Group prop [cols1, cols2])
              (zipWith (++) data1 [data2])
 
-below :: Properties -> Table a -> SemiTable a -> Table a
+below :: Properties -> Table rh ch a -> SemiTable rh a -> Table rh ch a
 below prop (Table     rows1 cols data1)
            (SemiTable rows2      data2) =
   Table (Group prop [rows1, rows2]) cols (data1 ++ [data2])
 
 -- | besides
+(^..^) :: Table rh ch a -> SemiTable ch a -> Table rh ch a
 (^..^) = beside NoLine
 -- | besides with a line
+(^|^)  :: Table rh ch a -> SemiTable ch a -> Table rh ch a
 (^|^)  = beside SingleLine
 -- | besides with a double line
+(^||^) :: Table rh ch a -> SemiTable ch a -> Table rh ch a
 (^||^) = beside DoubleLine
 
 -- | below
+(+.+) :: Table rh ch a -> SemiTable rh a -> Table rh ch a
 (+.+) = below NoLine
 -- | below with a line
+(+----+) :: Table rh ch a -> SemiTable rh a -> Table rh ch a
 (+----+) = below SingleLine
 -- | below with a double line
+(+====+) :: Table rh ch a -> SemiTable rh a -> Table rh ch a
 (+====+) = below DoubleLine
-
-

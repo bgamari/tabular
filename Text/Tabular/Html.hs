@@ -3,14 +3,14 @@ module Text.Tabular.Html where
 import Text.Tabular
 import Text.Html
 
--- | for simplicity, we assume that each cell is rendered
---   on a single line
-render :: (a -> String) -> Table a -> Html
-render f (Table rh ch cells) =
+render :: (rh -> Html)
+       -> (ch -> Html)
+       -> (a -> Html) -> Table rh ch a -> Html
+render fr fc f (Table rh ch cells) =
  table $ header +++ body
  where
-  header = tr (myTh "" +++ headerCore)
-  headerCore = concatHtml $ squish applyVAttr myTh ch
+  header = tr (myTh noHtml +++ headerCore)
+  headerCore = concatHtml $ squish applyVAttr myTh (fmap fc ch)
   --
   body = concatHtml $ squish applyHAttr tr
        $ fmap fst
@@ -18,11 +18,11 @@ render f (Table rh ch cells) =
   rows = zipWith (\h cs -> myTh h +++ doRow cs)
            rhStrings cells
   doRow cs = concatHtml $ squish applyVAttr myTd $
-               fmap fst $ zipHeader "" (map f cs) ch
+               fmap fst $ zipHeader noHtml (map f cs) (fmap fc ch)
   --
-  myTh  = th . stringToHtml
-  myTd  = td . stringToHtml
-  rhStrings = headerStrings rh
+  myTh  = th
+  myTd  = td
+  rhStrings = map fr $ headerContents rh
   applyVAttr p x = x ! vAttr p
   applyHAttr p x = x ! hAttr p
 

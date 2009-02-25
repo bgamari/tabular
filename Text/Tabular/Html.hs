@@ -50,8 +50,8 @@ defaultCss = unlines
   [ "table   { border-collapse: collapse; border: 1px solid; }"
   , "th      { padding:0.2em; background-color: #eeeeee }"
   , "td      { padding:0.2em; }"
-  , ".thinbottom  { }"
-  , ".thickbottom { border-bottom: 1px solid }"
+  , ".thinbottom  { border-bottom: 1px solid }"
+  , ".thickbottom { border-bottom: 3px solid }"
   , ".thinright  { border-right: 1px solid }"
   , ".thickright { border-right: 3px solid }"
   ]

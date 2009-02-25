@@ -4,12 +4,14 @@ import Text.Html
 import qualified Text.Tabular.AsciiArt as A
 import qualified Text.Tabular.Html     as H
 import qualified Text.Tabular.Latex    as L
+import qualified Text.Tabular.Csv      as C
 
 main =
- do writeFile "sample1.txt"  $ A.render id example2
+ do writeFile "sample1.txt"  $ A.render id id id example2
     writeFile "sample1.html" $ renderHtml $
-      H.css H.defaultCss +++ H.render id example2
-    writeFile "sample1T.tex"  $ L.render id example2
+      H.css H.defaultCss +++ H.render stringToHtml stringToHtml stringToHtml example2
+    writeFile "sample1T.tex" $ L.render id id id example2
+    writeFile "sample1.csv"  $ C.render id id id example2
     putStrLn $ "wrote sample1.txt, sample1.html and sample1T.tex"
     putStrLn $ "(hint: pdflatex sample1)"
 

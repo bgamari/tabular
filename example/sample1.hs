@@ -1,5 +1,5 @@
 import Text.Tabular
-import Text.Html
+import Text.Html (renderHtml, stringToHtml, (+++))
 
 import qualified Text.Tabular.AsciiArt as A
 import qualified Text.Tabular.Html     as H

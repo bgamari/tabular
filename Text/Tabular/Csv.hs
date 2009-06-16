@@ -16,5 +16,5 @@ render fr fc f (Table rh ch cells) =
  where
   -- cell2 includes the row and column labels
   cells2 = zipWith (\h cs -> h : map f cs) rhStrings cells
-  chStrings = map fc $ headerContents ch
+  chStrings = "" : (map fc $ headerContents ch)
   rhStrings = map fr $ headerContents rh

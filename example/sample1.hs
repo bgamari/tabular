@@ -2,12 +2,14 @@ import Text.Tabular
 import Text.Html (renderHtml, stringToHtml, (+++))
 
 import qualified Text.Tabular.AsciiArt as A
+import qualified Text.Tabular.SimpleText as S
 import qualified Text.Tabular.Html     as H
 import qualified Text.Tabular.Latex    as L
 import qualified Text.Tabular.Csv      as C
 
 main =
  do writeFile "sample1.txt"  $ A.render id id id example2
+    writeFile "sample1.tab"  $ S.render "\t" id id id example2
     writeFile "sample1.html" $ renderHtml $
       H.css H.defaultCss +++ H.render stringToHtml stringToHtml stringToHtml example2
     writeFile "sample1T.tex" $ L.render id id id example2

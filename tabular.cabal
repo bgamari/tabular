@@ -5,7 +5,7 @@ description:         Tabular provides a Haskell representation of two-dimensiona
                      data tables, the kind that you might find in a spreadsheet or
                      or a research report.  It also comes with some default
                      rendering functions for turning those tables into ASCII art,
-                     CSV, HTML or LaTeX.
+                     simple text with an arbitrary delimiter, CSV, HTML or LaTeX.
                      .
                      Below is an example of the kind of output this library produces.
                      The tabular package can group rows and columns, each group
@@ -33,6 +33,7 @@ build-type:          Simple
 ghc-options:
 exposed-modules:     Text.Tabular,
                      Text.Tabular.AsciiArt,
+                     Text.Tabular.SimpleText,
                      Text.Tabular.Csv,
                      Text.Tabular.Html,
                      Text.Tabular.Latex

@@ -11,11 +11,14 @@ render :: (rh -> String)
        -> Table rh ch a
        -> String
 render fr fc f (Table rh ch cells) =
-  unlines $ [ renderColumns sizes ch2
-            , concat $ renderHLine sizes ch2 DoubleLine
+  unlines $ [ bar SingleLine   -- +--------------------------------------+
+            , renderColumns sizes ch2
+            , bar DoubleLine   -- +======================================+
             ] ++
-            (renderRs $ fmap renderR $ zipHeader [] cells $ fmap fr rh)
+            (renderRs $ fmap renderR $ zipHeader [] cells $ fmap fr rh) ++
+            [ bar SingleLine ] -- +--------------------------------------+
  where
+  bar = concat . renderHLine sizes ch2
   -- ch2 and cell2 include the row and column labels
   ch2 = Group DoubleLine [Header "", fmap fc ch]
   cells2 = headerContents ch2
@@ -35,9 +38,9 @@ render fr fc f (Table rh ch cells) =
 renderColumns :: [Int] -- ^ max width for each column
               -> Header String
               -> String
-renderColumns is h =
-  concatMap helper $ flattenHeader $ zipHeader 0 is h
+renderColumns is h = "| " ++ coreLine ++ " |"
  where
+  coreLine = concatMap helper $ flattenHeader $ zipHeader 0 is h
   helper = either hsep (uncurry padLeft)
   hsep :: Properties -> String
   hsep NoLine     = " "
@@ -53,9 +56,9 @@ renderHLine w h SingleLine = [renderHLine' w '-' h]
 renderHLine w h DoubleLine = [renderHLine' w '=' h]
 
 renderHLine' :: [Int] -> Char -> Header String -> String
-renderHLine' is sep h = concatMap helper
-                      $ flattenHeader $ zipHeader 0 is h
+renderHLine' is sep h = [ '+', sep ] ++ coreLine ++ [sep, '+']
  where
+  coreLine        = concatMap helper $ flattenHeader $ zipHeader 0 is h
   helper          = either vsep dashes
   dashes (i,_)    = replicate i sep
   vsep NoLine     = [sep]

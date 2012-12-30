@@ -1,5 +1,5 @@
 name:                tabular
-version:             0.2.2.2
+version:             0.2.2.3
 synopsis:            Two-dimensional data tables with rendering functions
 description:         Tabular provides a Haskell representation of two-dimensional
                      data tables, the kind that you might find in a spreadsheet or

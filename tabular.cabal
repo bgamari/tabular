@@ -26,16 +26,22 @@ license-file:        LICENSE
 author:              Eric Kow
 maintainer:          Eric Kow <eric.kow@gmail.com>
 homepage:            http://hub.darcs.net/kowey/tabular
-build-Depends:       base >= 2.1 && < 5, mtl >= 1 && < 2.2,
-                     csv  >= 0.1 && < 0.2,
-                     html >= 1.0 && < 2.0
+cabal-version:       >= 1.8
 build-type:          Simple
-ghc-options:
-exposed-modules:     Text.Tabular,
-                     Text.Tabular.AsciiArt,
-                     Text.Tabular.SimpleText,
-                     Text.Tabular.Csv,
-                     Text.Tabular.Html,
-                     Text.Tabular.Latex
 data-files: example/sample1.hs,
             example/sample1.tex
+
+source-repository head
+  type:     darcs
+  location: http://hub.darcs.net/kowey/tabular
+
+library
+  build-Depends:       base >= 2.1 && < 5, mtl >= 1 && < 2.2,
+                       csv  >= 0.1 && < 0.2,
+                       html >= 1.0 && < 2.0
+  exposed-modules:     Text.Tabular,
+                       Text.Tabular.AsciiArt,
+                       Text.Tabular.SimpleText,
+                       Text.Tabular.Csv,
+                       Text.Tabular.Html,
+                       Text.Tabular.Latex

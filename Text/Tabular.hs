@@ -26,7 +26,7 @@ data Header h = Header h | Group Properties [Header h]
 -- >   , ["meh",  "well...", "worst ever", "ok"]
 -- >   ]
 --
--- > -- Text.Tabular.AsciiArt.render example id
+-- > -- Text.Tabular.AsciiArt.render id id id example
 -- > --
 -- > --     || memtest 1 | memtest 2 ||  time test  | time test 2
 -- > -- ====++===========+===========++=============+============

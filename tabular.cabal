@@ -36,7 +36,7 @@ source-repository head
   location: http://hub.darcs.net/kowey/tabular
 
 library
-  build-Depends:       base >= 2.1 && < 5, mtl >= 1 && < 2.2,
+  build-Depends:       base >= 2.1 && < 5, mtl >= 1 && < 2.3,
                        csv  >= 0.1 && < 0.2,
                        html >= 1.0 && < 2.0
   exposed-modules:     Text.Tabular,

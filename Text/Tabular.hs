@@ -1,6 +1,8 @@
 -- | Note: the core types and comibnators
 --   from this module are from Toxaris in a #haskell
 --   conversation on 2008-08-24
+{-# LANGUAGE FlexibleContexts #-}
+
 module Text.Tabular where
 
 import Data.List (intersperse)

@@ -28,8 +28,8 @@ maintainer:          Eric Kow <eric.kow@gmail.com>
 homepage:            http://hub.darcs.net/kowey/tabular
 cabal-version:       >= 1.8
 build-type:          Simple
-data-files: example/sample1.hs,
-            example/sample1.tex
+extra-doc-files: example/sample1.hs,
+                 example/sample1.tex
 
 source-repository head
   type:     darcs

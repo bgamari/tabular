@@ -9,7 +9,9 @@ import Data.List (intersperse)
 import Control.Monad.State (evalState, State, get, put)
 
 data Properties = NoLine | SingleLine | DoubleLine
+                deriving (Show)
 data Header h = Header h | Group Properties [Header h]
+              deriving (Show)
 
 -- |
 -- > example = Table
@@ -39,6 +41,7 @@ data Header h = Header h | Group Properties [Header h]
 -- > -- B 2 ||    better | no chance ||    crawling |     amazing
 -- > -- B 3 ||       meh |   well... ||  worst ever |          ok
 data Table rh ch a = Table (Header rh) (Header ch) [[a]]
+                   deriving (Show)
 
 -- ----------------------------------------------------------------------
 -- * Helper functions for rendering
@@ -125,6 +128,7 @@ squish decorator f h = helper $ flattenHeader h
 -- >   +.+ row "B 2" ["better", "no chance", "crawling", "amazing"]
 -- >   +.+ row "B 3" ["meh",  "well...", "worst ever", "ok"]
 data SemiTable h a = SemiTable (Header h) [a]
+                   deriving (Show)
 
 empty :: Table rh ch a
 empty = Table (Group NoLine []) (Group NoLine []) []

@@ -172,7 +172,7 @@ beside :: Properties -> Table rh ch a -> SemiTable ch a -> Table rh ch a
 beside prop (Table rows cols1 data1)
             (SemiTable  cols2 data2) =
   Table rows (Group prop [cols1, cols2])
-             (zipWith (++) data1 [data2])
+             (zipWith (\xs x -> xs ++ [x]) data1 data2)
 
 below :: Properties -> Table rh ch a -> SemiTable rh a -> Table rh ch a
 below prop (Table     rows1 cols data1)

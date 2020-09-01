@@ -26,7 +26,7 @@ license-file:        LICENSE
 author:              Eric Kow
 maintainer:          Ben Gamari <bgamari@well-typed.com>
 homepage:            https://github.com/bgamari/tabular
-cabal-version:       >= 1.18
+cabal-version:       1.18
 build-type:          Simple
 extra-doc-files:     example/sample1.hs,
                      example/sample1.tex
@@ -56,3 +56,4 @@ library
                        Text.Tabular.Csv,
                        Text.Tabular.Html,
                        Text.Tabular.Latex
+  default-language:    Haskell2010

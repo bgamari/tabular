@@ -1,5 +1,5 @@
 name:                tabular
-version:             0.2.2.7
+version:             0.2.2.8
 synopsis:            Two-dimensional data tables with rendering functions
 description:         Tabular provides a Haskell representation of two-dimensional
                      data tables, the kind that you might find in a spreadsheet or
@@ -24,19 +24,20 @@ category:            Text
 license:             BSD3
 license-file:        LICENSE
 author:              Eric Kow
-maintainer:          Eric Kow <eric.kow@gmail.com>
-homepage:            http://hub.darcs.net/kowey/tabular
+maintainer:          Ben Gamari <bgamari@well-typed.com>
+homepage:            https://github.com/bgamari/tabular
 cabal-version:       >= 1.8
 build-type:          Simple
 extra-doc-files: example/sample1.hs,
                  example/sample1.tex
 
 source-repository head
-  type:     darcs
-  location: http://hub.darcs.net/kowey/tabular
+  type:     git
+  location: https://github.com/bgamari/tabular
 
 library
-  build-Depends:       base >= 2.1 && < 5, mtl >= 1 && < 2.3,
+  build-Depends:       base >= 2.1 && < 5,
+                       mtl >= 1 && < 2.3,
                        csv  >= 0.1 && < 0.2,
                        html >= 1.0 && < 2.0
   exposed-modules:     Text.Tabular,

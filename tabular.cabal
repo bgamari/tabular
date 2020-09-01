@@ -28,8 +28,18 @@ maintainer:          Ben Gamari <bgamari@well-typed.com>
 homepage:            https://github.com/bgamari/tabular
 cabal-version:       >= 1.8
 build-type:          Simple
-extra-doc-files: example/sample1.hs,
-                 example/sample1.tex
+extra-doc-files:     example/sample1.hs,
+                     example/sample1.tex
+tested-with:         GHC==8.10.2,
+                     GHC==8.8.4,
+                     GHC==8.6.5,
+                     GHC==8.4.4,
+                     GHC==8.2.2,
+                     GHC==8.0.2,
+                     GHC==7.10.3,
+                     GHC==7.8.4,
+                     GHC==7.6.3
+
 
 source-repository head
   type:     git
